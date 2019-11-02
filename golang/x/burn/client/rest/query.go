@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func someThingHandler(cliCtx context.CLIContext, storeName string) http.HandlerFunc {
+func validatedHandler(cliCtx context.CLIContext, storeName string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		paramType := vars[restName]

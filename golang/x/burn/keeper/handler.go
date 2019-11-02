@@ -23,7 +23,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 // Handle a message to burn proof
 func handleMsgBurnProof(ctx sdk.Context, keeper Keeper, msg types.MsgBurnProof) sdk.Result {
 	msg.ValidateBasic()
-	keeper.setValidated(ctx, msg.Proof.TxID)
+	keeper.setValidated(ctx, msg.Proof)
 
 	// TODO: hook in IBC
 

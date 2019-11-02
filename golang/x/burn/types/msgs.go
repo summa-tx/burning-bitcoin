@@ -54,6 +54,10 @@ func (msg MsgBurnProof) ValidateBasic() sdk.Error {
 		return ErrBadChain(err.Error(), DefaultCodespace)
 	}
 
+	if validChain.LT(sdk.NewUint(4)) {
+		return ErrBadChain("Insufficient work. Need 4 works.", DefaultCodespace)
+	}
+
 	return nil
 }
 

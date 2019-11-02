@@ -8,10 +8,10 @@ import (
 // QueryResValidated is the payload for a SomeThing Query
 type QueryResValidated struct {
 	TxID   string `json:"txid"`
-	Result bool   `json:"validated"`
+	Result uint   `json:"validated"`
 }
 
 // implement fmt.Stringer
 func (r QueryResValidated) String() string {
-	return strings.Join([]string{r.TxID, fmt.Sprintf("\t%t", r.Result)}, "\n")
+	return strings.Join([]string{r.TxID, fmt.Sprintf("\t%d", r.Result)}, "\n")
 }
