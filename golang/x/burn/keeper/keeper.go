@@ -56,3 +56,16 @@ func (k Keeper) AppendAddr(ctx sdk.Context, addr sdk.AccAddress) {
 
 	store.Set([]byte("ponzikings"), kings)
 }
+
+// GetKings gets the list of kings
+func (k Keeper) GetKings(ctx sdk.Context) []sdk.AccAddress {
+	store := ctx.KVStore(k.storeKey)
+	kings := store.Get([]byte("ponzikings"))
+
+	var kingsAddrs []sdk.AccAddress
+	for i := 0; i < len(kings); i += 20 {
+		kingsAddrs = append(kingsAddrs, sdk.AccAddress(kings[i:i+20]))
+	}
+
+	return kingsAddrs
+}
