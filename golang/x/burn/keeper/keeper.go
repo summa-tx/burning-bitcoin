@@ -46,3 +46,13 @@ func (k Keeper) GetValidated(ctx sdk.Context, txid [32]byte) uint {
 	store := ctx.KVStore(k.storeKey)
 	return btcspv.BytesToUint(store.Get(txid[:]))
 }
+
+// AppendAddr appends a new ponzi burner
+func (k Keeper) AppendAddr(ctx sdk.Context, addr sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	kings := store.Get([]byte("ponzikings"))
+
+	kings = append(kings, addr.Bytes()...)
+
+	store.Set([]byte("ponzikings"), kings)
+}

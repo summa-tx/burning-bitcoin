@@ -37,7 +37,7 @@ func GetCommandValidated(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/validated/%s", queryRoute, digest), nil)
 			if err != nil {
-				fmt.Printf("could not get something - %s \n", digest)
+				fmt.Printf("could not get validation - %s \n", digest)
 				return nil
 			}
 

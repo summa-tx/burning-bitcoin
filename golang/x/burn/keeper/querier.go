@@ -26,8 +26,8 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 }
 
 func queryValidated(ctx sdk.Context, path []string, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	digest := []byte(path[0])
-	if len(digest) != 32 {
+	digest, err := hex.DecodeString(path[0])
+	if err != nil || len(digest) != 32 {
 		// TODO: make more good by returning sdk error
 		panic("bad")
 	}

@@ -22,10 +22,14 @@ func NewHandler(keeper Keeper) sdk.Handler {
 
 // Handle a message to burn proof
 func handleMsgBurnProof(ctx sdk.Context, keeper Keeper, msg types.MsgBurnProof) sdk.Result {
-	msg.ValidateBasic()
 	keeper.setValidated(ctx, msg.Proof)
+	addr, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		panic("bad bech32 address in Address")
+	}
+	keeper.AppendAddr(ctx, addr)
 
 	// TODO: hook in IBC
 
-	return sdk.Result{} // return
+	return sdk.Result{}
 }
