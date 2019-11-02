@@ -1,5 +1,61 @@
 ## TODOs:
 
+## Creating Genesis State
+
+This assumes that the `GOPATH` is set up correctly.
+
+Create the genesis files.
+
+```
+$ burnd init $CHAINID
+```
+
+Now create a keypair with a desired name.
+This must be done with `burncli`.
+
+```
+$ burncli keys add $NAME
+```
+
+Check to be sure that the key was added correctly.
+
+```
+$ burncli keys show $NAME
+```
+
+Now add the address to the genesis file in the accounts section.
+The `[coins]` argument is a comma delimited string of the genesis
+state belonging to that address, ie `100btc,10ltc`.
+
+```
+$ burnd add-genesis-account $NAME [coins]
+```
+
+Now make sure that the genesis file is valid.
+
+```
+$ burnd validate-genesis
+```
+
+Now start the chain!
+
+```
+$ burnd start
+```
+
+Some other useful commands:
+
+Getting your own address
+
+```
+$ burncli -o json keys show $NAME | jq -r .address
+```
+
+Sending a Transaction
+
+```
+$ burncli --chain-id=$CHAINID tx send [from address] [to address] [amount]
+```
 
 ## How to add a view function
 1. Add necessary getter(s) in `x/burning/keeper/keeper.go`
