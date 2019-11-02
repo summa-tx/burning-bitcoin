@@ -20,28 +20,28 @@ func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	burnQueryCommand.AddCommand(client.GetCommands(
-		GetCommandSomeThing(storeKey, cdc),
+		GetCommandValidated(storeKey, cdc),
 	)...)
 	return burnQueryCommand
 }
 
-// GetCommandSomeThing queries information about a name
-func GetCommandSomeThing(queryRoute string, cdc *codec.Codec) *cobra.Command {
+// GetCommandValidated queries information about a name
+func GetCommandValidated(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "something",
-		Short: "something",
+		Use:   "validated [txid]",
+		Short: "check if a tx is previously validated",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			digest := args[0]
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/someThing", queryRoute), nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/validated/{%s}", queryRoute, digest), nil)
 			if err != nil {
 				fmt.Printf("could not get something - %s \n", digest)
 				return nil
 			}
 
-			var out types.QueryResSomeThing
+			var out types.QueryResValidated
 			cdc.MustUnmarshalJSON(res, &out)
 			return cliCtx.PrintOutput(out)
 		},

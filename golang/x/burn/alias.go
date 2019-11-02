@@ -19,6 +19,8 @@ var (
 	NewKeeper = keeper.NewKeeper
 	// NewQuerier is what is says on the tin
 	NewQuerier = keeper.NewQuerier
+	// NewMsgBurnProof is what is says on the tin
+	NewMsgBurnProof = types.NewMsgBurnProof
 	// RegisterCodec is what is says on the tin
 	RegisterCodec = types.RegisterCodec
 	// ModuleCdc is what is says on the tin
@@ -28,4 +30,6 @@ var (
 type (
 	// Keeper is what is says on the tin
 	Keeper = keeper.Keeper
+	// MsgBurnProof is what is says on the tin
+	MsgBurnProof = types.MsgBurnProof
 )

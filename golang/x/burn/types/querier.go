@@ -1,12 +1,17 @@
 package types
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
-// QueryResSomeThing is the payload for a SomeThing Query
-type QueryResSomeThing struct {
+// QueryResValidated is the payload for a SomeThing Query
+type QueryResValidated struct {
+	TxID   string `json:"txid"`
+	Result bool   `json:"validated"`
 }
 
 // implement fmt.Stringer
-func (r QueryResSomeThing) String() string {
-	return strings.Join([]string{}, "\n")
+func (r QueryResValidated) String() string {
+	return strings.Join([]string{r.TxID, fmt.Sprintf("\t%t", r.Result)}, "\n")
 }

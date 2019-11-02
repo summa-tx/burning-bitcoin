@@ -9,16 +9,20 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+
+	"github.com/summa-tx/bitcoin-spv/golang/btcspv"
 )
 
-type setSomeThingReq struct {
-	BaseReq rest.BaseReq `json:"base_req"`
-	Thing   string       `json:"thing"`
+type burnProofReq struct {
+	BaseReq     rest.BaseReq           `json:"base_req"`
+	Proof       btcspv.SPVProof        `json:"proof"`
+	HeaderChain []btcspv.BitcoinHeader `json:"headers"`
+	Address     string                 `json:"signer"`
 }
 
-func doThingHandler(cliCtx context.CLIContext) http.HandlerFunc {
+func burnProofHandler(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req setSomeThingReq
+		var req burnProofReq
 
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
@@ -29,7 +33,8 @@ func doThingHandler(cliCtx context.CLIContext) http.HandlerFunc {
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
-		msg := types.NewMsgDoThing(sdk.AccAddress{})
+
+		msg := types.NewMsgBurnProof(req.Proof, req.HeaderChain, req.Address, sdk.AccAddress{})
 		utils.WriteGenerateStdTxResponse(w, cliCtx, baseReq, []sdk.Msg{msg})
 	}
 }

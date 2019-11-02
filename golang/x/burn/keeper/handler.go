@@ -11,8 +11,8 @@ import (
 func NewHandler(keeper Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 		switch msg := msg.(type) {
-		case types.MsgDoThing:
-			return handleMsgDoThing(ctx, keeper, msg)
+		case types.MsgBurnProof:
+			return handleMsgBurnProof(ctx, keeper, msg)
 		default:
 			errMsg := fmt.Sprintf("Unrecognized nameservice Msg type: %v", msg.Type())
 			return sdk.ErrUnknownRequest(errMsg).Result()
@@ -20,7 +20,12 @@ func NewHandler(keeper Keeper) sdk.Handler {
 	}
 }
 
-// Handle a message to set name
-func handleMsgDoThing(ctx sdk.Context, keeper Keeper, msg types.MsgDoThing) sdk.Result {
+// Handle a message to burn proof
+func handleMsgBurnProof(ctx sdk.Context, keeper Keeper, msg types.MsgBurnProof) sdk.Result {
+	msg.ValidateBasic()
+	keeper.setValidated(ctx, msg.Proof.TxID)
+
+	// TODO: hook in IBC
+
 	return sdk.Result{} // return
 }

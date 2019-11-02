@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"bytes"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/summa-tx/bitcoin-spv/golang/btcspv"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine
@@ -20,19 +21,18 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) Keeper {
 	}
 }
 
-func (k Keeper) setSomeThing(ctx sdk.Context, thing []byte) {
-	digest := btcspv.Hash256(thing)
+func (k Keeper) setValidated(ctx sdk.Context, txid [32]byte) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(digest[:], thing[:])
+	store.Set(txid[:], []byte{1})
 }
 
-// SetSomeThing sets a thing
-func (k Keeper) SetSomeThing(ctx sdk.Context, thing []byte) {
-	k.setSomeThing(ctx, thing)
+// SetValidated sets a thing
+func (k Keeper) SetValidated(ctx sdk.Context, txid [32]byte) {
+	k.setValidated(ctx, txid)
 }
 
-// GetSomeThing gets a thing
-func (k Keeper) GetSomeThing(ctx sdk.Context, digest [32]byte) []byte {
+// GetValidated gets a thing
+func (k Keeper) GetValidated(ctx sdk.Context, txid [32]byte) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Get(digest[:])
+	return bytes.Equal(store.Get(txid[:]), []byte{1})
 }
