@@ -81,7 +81,13 @@
 
 <script>
 const BcoinClient = require('../../utils/BcoinClient')
-const client = new BcoinClient()
+const apiKey = process.env.API_KEY
+const host = process.env.HOST
+const port = process.env.PORT
+
+const client = new BcoinClient({
+  apiKey, host, port
+})
 
 export default {
   name: 'MainForm',
