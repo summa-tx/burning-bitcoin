@@ -54,18 +54,21 @@ class BcoinClient extends NodeClient {
     const txinfo = parseBcoinTx(tx.hex);
 
     let [nodes, index] = await this.getMerkleProof(txid, tx.height);
-    nodes = Buffer.from(nodes.join(), 'hex');
+
+    let path = '';
+    for (let node of nodes)
+      path += node;
 
     return {
       version: Number(utils.bytesToUint(utils.reverseEndianness(txinfo.version))),
-      vin: txinfo.vin,
-      vout: txinfo.vout,
+      vin: Buffer.from(txinfo.vin).toString('hex'),
+      vout: Buffer.from(txinfo.vout).toString('hex'),
       locktime: Number(utils.bytesToUint(Buffer.from(txinfo.locktime).reverse())),
-      tx_id: new Uint8Array(Buffer.from(txid, 'hex')),
-      tx_id_le: new Uint8Array(Buffer.from(reverse(txid), 'hex')),
+      tx_id: txid,
+      tx_id_le: reverse(txid),
       index: index,
       confirming_header: header,
-      intermediate_nodes: new Uint8Array(nodes)
+      intermediate_nodes: path
     }
   }
 
@@ -74,13 +77,13 @@ class BcoinClient extends NodeClient {
     const header = Headers.fromJSON(json);
 
     return {
-      raw: new Uint8Array(header.toRaw().slice(0, 80)),
-      hash: new Uint8Array(header.hash()),
-      hash_le: new Uint8Array(header.hash().reverse()),
+      raw: header.toRaw().slice(0, 80).toString('hex'),
+      hash: header.hash().toString('hex'),
+      hash_le: header.hash().reverse().toString('hex'),
       height: height,
-      prevhash: new Uint8Array(header.prevBlock),
-      merkle_root: new Uint8Array(header.merkleRoot),
-      merkle_root_le: new Uint8Array(header.merkleRoot.reverse()),
+      prevhash: header.prevBlock.toString('hex'),
+      merkle_root: header.merkleRoot.toString('hex'),
+      merkle_root_le: header.merkleRoot.reverse().toString('hex'),
     }
   }
 
