@@ -63,15 +63,11 @@
                 <h3>Submit Proof</h3>
               </v-flex>
               <v-flex>
-                <v-text-field
-                  v-model="proof"
-                  label="Enter your proof"
-                  :rules="[v => !!v || 'Proof is required']"
-                ></v-text-field>
+                {{ proof }}
               </v-flex>
               <v-layout justify-center>
                 <v-btn
-                  :disabled="!validProof"
+                  :disabled="validProof"
                   @click="handleSubmitProof"
                 >Submit Proof</v-btn>
               </v-layout>
@@ -84,6 +80,9 @@
 </template>
 
 <script>
+const BcoinClient = require('../../utils/BcoinClient')
+const client = new BcoinClient()
+
 export default {
   name: 'MainForm',
 
@@ -103,11 +102,11 @@ export default {
 
   data: () => {
     return {
-      txid: null,
+      txid: 'eeab514286b0968957b875faa9486945e76bec9d6d1fa4762351f2cfe6a2aa8d',
       numOfHeaders: null,
       proof: null,
       validTxid: true,
-      validProof: true,
+      validProof: false,
       rules: {
         txid: [v => !!v || 'TXID is required'],
         headers: [v => v < 101 || 'Max headers is 100']
@@ -116,8 +115,16 @@ export default {
   },
 
   methods: {
-    handleCollectProof: () => {
+    handleCollectProof () {
       console.log('collect proof')
+      client.getProof(this.txid).then((proof) => {
+        this.proof = proof
+        console.log({ proof })
+        this.validProof = true
+      })
+      .catch((e) => {
+        console.log('bcoin getProof error', e)
+      })
     },
 
     handleSubmitProof: () => {
