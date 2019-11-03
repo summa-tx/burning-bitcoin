@@ -75,15 +75,17 @@ class BcoinClient extends NodeClient {
   async getHeader(height) {
     const json = await super.getBlockHeader(height);
     const header = Headers.fromJSON(json);
+    const merkleRoot = header.merkleRoot.slice();
+    const hash = header.hash().slice();
 
     return {
       raw: header.toRaw().slice(0, 80).toString('hex'),
-      hash: header.hash().reverse().toString('hex'),
-      hash_le: header.hash().toString('hex'),
+      hash: utils.serializeHex(utils.reverseEndianness(hash)),
+      hash_le: utils.serializeHex(utils.reverseEndianness(header.hash())),
       height: height,
-      prevhash: header.prevBlock.reverse().toString('hex'),
-      merkle_root: header.merkleRoot.reverse().toString('hex'),
-      merkle_root_le: header.merkleRoot.toString('hex'),
+      prevhash: utils.serializeHex(utils.reverseEndianness(header.prevBlock)),
+      merkle_root: utils.serializeHex(utils.reverseEndianness(merkleRoot)),
+      merkle_root_le: utils.serializeHex(utils.reverseEndianness(merkleRoot))
     }
   }
 
