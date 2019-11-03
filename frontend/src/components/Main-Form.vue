@@ -1,7 +1,25 @@
 <template>
   <section class="">
-    {{ proofCount }}
-    {{ tokens }}
+    <v-container>
+      <v-row dense>
+        <v-col sm="3">Number of Proofs:</v-col>
+        <v-col sm="9">{{ proofs.length }}</v-col>
+      </v-row>
+      <v-row dense>
+        <v-col sm="3">Number of tokens:</v-col>
+        <v-col sm="9">{{ tokens }}</v-col>
+      </v-row>
+      <v-row dense>
+        <v-col sm="3">List of submitted proofs:</v-col>
+        <v-col sm="9">
+          <section class="proofs-list">
+            <ul>
+              <li v-for="(index, proof) in proofs" :key="index">{{proof}}</li>
+            </ul>
+          </section>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-layout column justify-center align-center>
       <v-container>
         <h2>Instructions:</h2>
@@ -310,7 +328,8 @@ export default {
       mint: JSON.parse(localStorage.getItem('mint')) || null,
       totalBits: JSON.parse(localStorage.getItem('totalBits')) || null,
       proofs: [],
-      tokens: 0
+      tokens: 0,
+      myTokens: 0
     }
   },
 
@@ -370,5 +389,11 @@ export default {
   margin 20px 0
   border 2px solid #e3e3e3
   border-radius 10px
+
+.proofs-list
+  min-height 50px
+  max-height 200px
+  overflow scroll
+  border 2px solid #e3e3e3
 
 </style>
