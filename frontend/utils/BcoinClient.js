@@ -60,8 +60,8 @@ class BcoinClient extends NodeClient {
       vin: txinfo.vin,
       vout: txinfo.vout,
       locktime: txinfo.locktime,
-      tx_id: new Uint8Array(txid),
-      tx_id_le: new Uint8Array(reverse(txid)),
+      tx_id: new Uint8Array(Buffer.from(txid, 'hex')),
+      tx_id_le: new Uint8Array(Buffer.from(reverse(txid), 'hex')),
       index: index,
       confirming_header: header,
       intermediate_nodes: new Uint8Array(nodes)
