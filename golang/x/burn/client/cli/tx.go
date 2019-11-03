@@ -47,6 +47,7 @@ func GetCmdBurnProof(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var req burnProofCall
+			println(string(args[0]))
 			json.Unmarshal([]byte(args[0]), &req)
 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
