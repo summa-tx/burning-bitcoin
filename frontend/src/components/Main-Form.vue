@@ -1,5 +1,7 @@
 <template>
   <section class="">
+    {{ proofCount }}
+    {{ tokens }}
     <v-layout column justify-center align-center>
       <v-container>
         <h2>Instructions:</h2>
@@ -81,12 +83,31 @@
 
 <script>
 import axios from 'axios'
+import { makeMint } from '@agoric/ertp/core/mint'
 
 export default {
   name: 'MainForm',
 
   components: {
     ClickToCopy: () => import(/* webpackChunkName: 'Click to Copy' */ './Click-To-Copy')
+  },
+
+  async mounted () {
+    // if (!this.mint) {
+    //   this.mint = makeMint('burntBits')
+    //   this.totalBits = this.mint.getAssay().makeEmptyPurse()
+    //   localStorage.setItem('mint', JSON.stringify(this.mint))
+    //   localStorage.setItem('totalBits', JSON.stringify(this.totalBits))
+    // }
+    // this.makeBurntBits()
+    const burntBitsMint = makeMint('burntBits')
+    const purse = burntBitsMint.mint(1000)
+    const assay = burntBitsMint.getAssay()
+    const payment = purse.withdraw(1000)
+    const totalBitsPurse = assay.makeEmptyPurse()
+    totalBitsPurse.depositAll(payment)
+    this.mint = burntBitsMint
+    this.totalBits = totalBitsPurse
   },
 
   computed: {
@@ -110,7 +131,11 @@ export default {
         txid: [v => !!v || 'TXID is required'],
         headers: [v => v < 101 || 'Max headers is 100']
       },
-      rawProof: undefined
+      rawProof: undefined,
+      mint: JSON.parse(localStorage.getItem('mint')) || null,
+      totalBits: JSON.parse(localStorage.getItem('totalBits')) || null,
+      proofCount: 0,
+      tokens: 0
     }
   },
 
@@ -132,10 +157,18 @@ export default {
 
     handleSubmitProof () {
       console.log('submit proof')
-      axios.post('http://localhost:3000/submitProof', { proof: this.rawProof})
+      axios.post('http://localhost:3000/submitProof', { proof: this.proof})
         .then((res) => {
           console.log({res})
+          this.proofCount = res.data.proofCount
+          this.tokens = res.data.tokens
         })
+    },
+
+    makeBurntBits (amount) {
+      const purse = this.mint.mint(amount, 'bits')
+      const payment = purse.withdraw(amount)
+      this.totalBits
     }
   }
 }
