@@ -67,7 +67,7 @@
               </v-flex>
               <v-layout justify-center>
                 <v-btn
-                  :disabled="validProof"
+                  :disabled="!validProof"
                   @click="handleSubmitProof"
                 >Submit Proof</v-btn>
               </v-layout>
@@ -80,24 +80,13 @@
 </template>
 
 <script>
-import BcoinClient from '../../../utils/BcoinClient'
-const apiKey = process.env.BCOIN_API_KEY
-const host = process.env.BCOIN_HOST
-const port = process.env.BCOIN_PORT
-
-const client = new BcoinClient({
-  apiKey, host, port
-})
+import axios from 'axios'
 
 export default {
   name: 'MainForm',
 
   components: {
     ClickToCopy: () => import(/* webpackChunkName: 'Click to Copy' */ './Click-To-Copy')
-  },
-
-  mounted () {
-    console.log(test.thing())
   },
 
   computed: {
@@ -120,25 +109,33 @@ export default {
       rules: {
         txid: [v => !!v || 'TXID is required'],
         headers: [v => v < 101 || 'Max headers is 100']
-      }
+      },
+      rawProof: undefined
     }
   },
 
   methods: {
     handleCollectProof () {
       console.log('collect proof')
-      // client.getProof(this.txid).then((proof) => {
-      //   this.proof = proof
-      //   console.log({ proof })
-      //   this.validProof = true
-      // })
-      // .catch((e) => {
-      //   console.log('bcoin getProof error', e)
-      // })
+      axios.post('http://localhost:3000/getProof', { txid: this.txid })
+        .then((res) => {
+          console.log({res})
+          this.proof = res.data.proof.pretty
+          this.rawProof = res.data.proof.raw
+          this.validProof = true
+        })
+        .catch((err) => {
+          console.log({err})
+          this.validProof = false
+        })
     },
 
-    handleSubmitProof: () => {
+    handleSubmitProof () {
       console.log('submit proof')
+      axios.post('http://localhost:3000/submitProof', { proof: this.rawProof})
+        .then((res) => {
+          console.log({res})
+        })
     }
   }
 }

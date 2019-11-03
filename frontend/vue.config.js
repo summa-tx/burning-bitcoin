@@ -6,10 +6,10 @@ module.exports = {
   ],
   chainWebpack: config => {
     config.module
-      .rule('bcoin')
+      .rule('js')
       .test(/\.js$/)
       .exclude
-        .add(path.resolve(__dirname + '../utils'))
+        .add(/bcoinstuff\/BcoinClient.js/)
         .end()
       .use('babel-loader')
       .loader('babel-loader')
