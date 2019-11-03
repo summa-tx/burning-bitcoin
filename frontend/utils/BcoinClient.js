@@ -33,10 +33,8 @@ class BcoinClient extends NodeClient {
    * @params {Number} count
    */
 
-  async getProof(txid, index, count) {
+  async getProof(txid) {
     assert(typeof txid === 'string');
-    assert((index >>> 0) === index);
-    assert(typeof count === 'number');
 
     const tx = await super.getTX(txid);
 
@@ -52,12 +50,9 @@ class BcoinClient extends NodeClient {
       throw new Error('Cannot find header');
 
     const header = await this.getHeader(tx.height);
-
     const txinfo = parseBcoinTx(tx.hex);
 
-    const headers = await this.getHeaderChainByCount(tx.height, count);
-
-    let [nodes] = await this.getMerkleProof(txid, tx.height);
+    let [nodes, index] = await this.getMerkleProof(txid, tx.height);
     nodes = Buffer.from(nodes.join(), 'hex');
 
     return {
