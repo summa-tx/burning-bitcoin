@@ -1,7 +1,7 @@
 # burning-bitcoin
 oh yeah
 
-Using Cosmos SDK, IBC, Agoric, bitcoin-spv/go, Coda
+Using Cosmos SDK, <strike>IBC</strike>, Agoric, bitcoin-spv/go, <strike>Coda</strike>
 
 - Burn bitcoin
 - Send proof of burn to Chain 1 (Cosmos SDK Zone) -> replaced with lotion.js
