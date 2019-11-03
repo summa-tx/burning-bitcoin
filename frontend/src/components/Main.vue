@@ -79,10 +79,6 @@
           </v-form>
         </v-layout>
       </v-container>
-      <v-layout>
-        <img src="../assets/pixel-btc.png" alt="BTC">
-        <!-- may want to insert burning animations here -->
-      </v-layout>
     </v-layout>
   </section>
 </template>
