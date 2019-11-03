@@ -7,7 +7,7 @@
 'use strict';
 
 const {NodeClient} = require('bcoin/lib/client');
-const {Block, ChainEntry} = require('bcoin');
+const {TX, Block, ChainEntry, Headers} = require('bcoin');
 const assert = require('bsert');
 const {merkle} = require('bcrypto');
 const hash256 = require('bcrypto/lib/hash256');
@@ -26,6 +26,77 @@ class BcoinClient extends NodeClient {
    */
   constructor(options) {
     super(options);
+  }
+
+  /**
+   * @params {String} txid - big endian
+   * @params {Number} count
+   */
+
+  async getProof(txid, index, count) {
+    assert(typeof txid === 'string');
+    assert((index >>> 0) === index);
+    assert(typeof count === 'number');
+
+    const tx = await super.getTX(txid);
+
+    if (!tx)
+      throw new Error('Cannot find transaction');
+
+    if (tx.height < 0)
+      throw new Error('Transaction not confirmed');
+
+    const json = await super.getBlockHeader(tx.height);
+
+    if (!json)
+      throw new Error('Cannot find header');
+
+    const header = await this.getHeader(tx.height);
+
+    const txinfo = parseBcoinTx(tx.hex);
+
+    const headers = await this.getHeaderChainByCount(tx.height, count);
+
+    let [nodes] = await this.getMerkleProof(txid, tx.height);
+    nodes = Buffer.from(nodes.join(), 'hex');
+
+    return {
+      version: txinfo.version,
+      vin: txinfo.vin,
+      vout: txinfo.vout,
+      locktime: txinfo.locktime,
+      tx_id: new Uint8Array(txid),
+      tx_id_le: new Uint8Array(reverse(txid)),
+      index: index,
+      confirming_header: header,
+      intermediate_nodes: new Uint8Array(nodes)
+    }
+  }
+
+  async getHeader(height) {
+    const json = await super.getBlockHeader(height);
+    const header = Headers.fromJSON(json);
+
+    return {
+      raw: new Uint8Array(header.toRaw()),
+      hash: new Uint8Array(header.hash()),
+      hash_le: new Uint8Array(header.hash().reverse()),
+      height: height,
+      prevhash: new Uint8Array(header.prevBlock),
+      merkle_root: new Uint8Array(header.merkleRoot),
+      merkle_root_le: new Uint8Array(header.merkleRoot.reverse()),
+    }
+  }
+
+  async getHeaders(height, count) {
+    const headers = [];
+
+    for (let i = 0; i < count; i++) {
+      const header = await this.getHeader(height + i);
+      headers.push(header);
+    }
+
+    return headers;
   }
 
   /**
@@ -48,6 +119,7 @@ class BcoinClient extends NodeClient {
    * @param {String} txid
    * @returns {String}
    */
+
   async getTX(txid) {
     const tx = await super.getTX(txid);
     return tx.hex;
@@ -60,6 +132,7 @@ class BcoinClient extends NodeClient {
    * @param {Number} height
    * @returns {[][]String, Number} - a merkle proof and the index of the leaf
    */
+
   async getMerkleProof(txid, height) {
     const block = await super.execute('getblockbyheight', [height]);
 
@@ -83,6 +156,26 @@ class BcoinClient extends NodeClient {
       proof.push(hash.toString('hex'));
 
     return [proof, index];
+  }
+
+  async getHeaderChainByCount(height, count) {
+    assert((height >>> 0) === height);
+    assert((count >>> 0) === count);
+
+    const headers = [];
+
+    for (let i = 0; i < count; i++) {
+      const json = await super.getBlockHeader(height);
+
+      if (!json)
+        throw new Error('Cannot find header');
+
+      const header = Headers.fromJSON(json);
+      const hex = header.toRaw().toString('hex');
+      headers.push(hex);
+    }
+
+    return new Uint8Array(headers.join(''));
   }
 
   /**
@@ -124,3 +217,37 @@ class BcoinClient extends NodeClient {
 
 module.exports = BcoinClient;
 
+// helper functions
+function parseBcoinTx(hex) {
+  if (typeof hex !== 'string') {
+    throw new Error('Must pass string')
+  }
+
+  const tx = TX.fromRaw(hex, 'hex');
+
+  if (tx.inputs.length > 253 || tx.outputs.length > 253) {
+    throw RangeError('too many ins/outs');
+  }
+
+  const raw = tx.toRaw();
+  // version and witness flag if any
+  const baseOffset = raw[4] === 0 ? 6 : 4;
+
+  const vinBytes = 1 + tx.inputs.reduce((a, b) => a + b.getSize(), 0);
+  const voutBytes = 1 + tx.outputs.reduce((a, b) => a + b.getSize(), 0);
+
+  return {
+    version: new Uint8Array(raw.subarray(0, 4)),
+    vin: new Uint8Array(raw.subarray(baseOffset, baseOffset + vinBytes)),
+    vout: new Uint8Array(raw.subarray(baseOffset + vinBytes, baseOffset + vinBytes + voutBytes)),
+    locktime: new Uint8Array(raw.subarray(-4))
+  };
+}
+
+/**
+ * Reverse the endianess of a hex string
+ */
+
+function reverse(str) {
+  return Buffer.from(str, 'hex').reverse().toString('hex');
+}
