@@ -7,12 +7,16 @@
 'use strict';
 
 const {NodeClient} = require('bcoin/lib/client');
-const {TX, Block, ChainEntry, Headers} = require('bcoin');
+const TX = require('bcoin/lib/primitives/tx');
+const Block = require('bcoin/lib/primitives/block');
+const Headers = require('bcoin/lib/primitives/headers');
+const ChainEntry = require('bcoin/lib/blockchain/chainentry');
 const assert = require('bsert');
 const {merkle} = require('bcrypto');
 const hash256 = require('bcrypto/lib/hash256');
 const consensus = require('bcoin/lib/protocol/consensus');
 const BN = require('bcrypto/lib/bn.js');
+const {utils} = require('@summa-tx/bitcoin-spv-js');
 
 /**
  * BcoinClient extends the bcoin NodeClient
@@ -53,33 +57,38 @@ class BcoinClient extends NodeClient {
     const txinfo = parseBcoinTx(tx.hex);
 
     let [nodes, index] = await this.getMerkleProof(txid, tx.height);
-    nodes = Buffer.from(nodes.join(), 'hex');
+
+    let path = '';
+    for (let node of nodes)
+      path += node;
 
     return {
-      version: txinfo.version,
-      vin: txinfo.vin,
-      vout: txinfo.vout,
-      locktime: txinfo.locktime,
-      tx_id: new Uint8Array(Buffer.from(txid, 'hex')),
-      tx_id_le: new Uint8Array(Buffer.from(reverse(txid), 'hex')),
+      version: Buffer.from(txinfo.version).toString('hex'),
+      vin: Buffer.from(txinfo.vin).toString('hex'),
+      vout: Buffer.from(txinfo.vout).toString('hex'),
+      locktime: Buffer.from(txinfo.locktime).toString('hex'),
+      tx_id: txid,
+      tx_id_le: reverse(txid),
       index: index,
       confirming_header: header,
-      intermediate_nodes: new Uint8Array(nodes)
+      intermediate_nodes: path
     }
   }
 
   async getHeader(height) {
     const json = await super.getBlockHeader(height);
     const header = Headers.fromJSON(json);
+    const merkleRoot = header.merkleRoot.slice();
+    const hash = header.hash().slice();
 
     return {
-      raw: new Uint8Array(header.toRaw()),
-      hash: new Uint8Array(header.hash()),
-      hash_le: new Uint8Array(header.hash().reverse()),
+      raw: header.toRaw().slice(0, 80).toString('hex'),
+      hash: utils.serializeHex(utils.reverseEndianness(hash)),
+      hash_le: utils.serializeHex(utils.reverseEndianness(header.hash())),
       height: height,
-      prevhash: new Uint8Array(header.prevBlock),
-      merkle_root: new Uint8Array(header.merkleRoot),
-      merkle_root_le: new Uint8Array(header.merkleRoot.reverse()),
+      prevhash: utils.serializeHex(utils.reverseEndianness(header.prevBlock)),
+      merkle_root: utils.serializeHex(utils.reverseEndianness(merkleRoot)),
+      merkle_root_le: utils.serializeHex(utils.reverseEndianness(merkleRoot))
     }
   }
 

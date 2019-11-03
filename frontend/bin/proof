@@ -72,23 +72,23 @@ const ports = {
   const proof = await client.getProof(txid);
 
   console.log(JSON.stringify({
-    version: Number(utils.bytesToUint(proof.version)),
-    vin: Buffer.from(proof.vin).toString('hex'),
-    vout: Buffer.from(proof.vout).toString('hex'),
-    locktime: Number(utils.bytesToUint(proof.locktime)),
-    tx_id: Buffer.from(proof.tx_id).toString('hex'),
-    tx_id_le: Buffer.from(proof.tx_id_le).toString('hex'),
+    version: proof.version,
+    vin: proof.vin,
+    vout: proof.vout,
+    locktime: proof.locktime,
+    tx_id: proof.tx_id,
+    tx_id_le: proof.tx_id_le,
     index: proof.index,
     confirming_header: {
-      raw: Buffer.from(proof.confirming_header.raw).toString('hex'),
-      hash: Buffer.from(proof.confirming_header.hash).toString('hex'),
-      hash_le: Buffer.from(proof.confirming_header.hash_le).toString('hex'),
+      raw: proof.confirming_header.raw,
+      hash: proof.confirming_header.hash,
+      hash_le: proof.confirming_header.hash_le,
       height: proof.confirming_header.height,
-      prevhash: Buffer.from(proof.confirming_header.prevhash).toString('hex'),
-      merkle_root: Buffer.from(proof.confirming_header.merkle_root).toString('hex'),
-      merkle_root_le: Buffer.from(proof.confirming_header.merkle_root_le).toString('hex')
+      prevhash: proof.confirming_header.prevhash,
+      merkle_root: proof.confirming_header.merkle_root,
+      merkle_root_le: proof.confirming_header.merkle_root_le
     },
-    intermediate_nodes: Buffer.from(proof.intermediate_nodes, 'hex').toString('hex')
+    intermediate_nodes: proof.intermediate_nodes
   }, null, 2));
 
 })().catch((error) => {

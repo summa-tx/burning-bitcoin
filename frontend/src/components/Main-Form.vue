@@ -79,17 +79,13 @@
           </v-form>
         </v-layout>
       </v-container>
-      <v-layout>
-        <img src="../assets/pixel-btc.png" alt="BTC">
-        <!-- may want to insert burning animations here -->
-      </v-layout>
     </v-layout>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'main',
+  name: 'MainForm',
 
   components: {
     ClickToCopy: () => import(/* webpackChunkName: 'Click to Copy' */ './Click-To-Copy')
@@ -107,12 +103,25 @@ export default {
 
   data: () => {
     return {
+      txid: null,
+      numOfHeaders: null,
+      proof: null,
       validTxid: true,
       validProof: true,
       rules: {
         txid: [v => !!v || 'TXID is required'],
         headers: [v => v < 101 || 'Max headers is 100']
       }
+    }
+  },
+
+  methods: {
+    handleCollectProof: () => {
+      console.log('collect proof')
+    },
+
+    handleSubmitProof: () => {
+      console.log('submit proof')
     }
   }
 }

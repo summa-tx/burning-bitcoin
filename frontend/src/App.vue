@@ -1,18 +1,18 @@
 <template>
   <v-app>
     <v-content>
-      <Main/>
+      <Animations />
+      <Main-Form/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import Main from './components/Main';
-
 export default {
   name: 'App',
   components: {
-    Main,
+    MainForm: () => import(/* webpackChunkName: 'Main-Form' */ './components/Main-Form'),
+    Animations: () => import(/* webpackChunkName: 'Animations' */ './components/Animations'),
   },
   data: () => ({
     //
