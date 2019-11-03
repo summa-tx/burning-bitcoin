@@ -72,10 +72,10 @@ const ports = {
   const proof = await client.getProof(txid);
 
   console.log(JSON.stringify({
-    version: Number(utils.bytesToUint(proof.version)),
+    version: Number(utils.bytesToUint(utils.reverseEndianness(proof.version))),
     vin: Buffer.from(proof.vin).toString('hex'),
     vout: Buffer.from(proof.vout).toString('hex'),
-    locktime: Number(utils.bytesToUint(proof.locktime)),
+    locktime: Number(utils.bytesToUint(Buffer.from(proof.locktime).reverse())),
     tx_id: Buffer.from(proof.tx_id).toString('hex'),
     tx_id_le: Buffer.from(proof.tx_id_le).toString('hex'),
     index: proof.index,
