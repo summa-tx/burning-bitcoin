@@ -6,6 +6,10 @@
         <v-col sm="9">{{ proofs.length }}</v-col>
       </v-row>
       <v-row dense>
+        <v-col sm="3">Total Tokens:</v-col>
+        <v-col sm="9">{{ tokens }}</v-col>
+      </v-row>
+      <v-row dense>
         <v-col sm="3">My tokens:</v-col>
         <v-col sm="9">{{ myTokens }}</v-col>
       </v-row>
@@ -371,8 +375,7 @@ export default {
 
     makeBurntBits () {
       // Randomly generate a number of tokens
-      const decimals = parseInt(Math.random() * 10) * 2
-      const randomNumOfTokens = parseInt(Math.random() * 1000 * decimals)
+      const randomNumOfTokens = parseInt(Math.random() * 1000)
 
       // Mint random number of tokens
       const purse = this.burntBitsMint.mint(randomNumOfTokens)
