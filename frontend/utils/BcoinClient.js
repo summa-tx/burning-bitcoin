@@ -60,10 +60,10 @@ class BcoinClient extends NodeClient {
       path += node;
 
     return {
-      version: Number(utils.bytesToUint(utils.reverseEndianness(txinfo.version))),
+      version: Buffer.from(txinfo.version).toString('hex'),
       vin: Buffer.from(txinfo.vin).toString('hex'),
       vout: Buffer.from(txinfo.vout).toString('hex'),
-      locktime: Number(utils.bytesToUint(Buffer.from(txinfo.locktime).reverse())),
+      locktime: Buffer.from(txinfo.locktime).toString('hex'),
       tx_id: txid,
       tx_id_le: reverse(txid),
       index: index,
