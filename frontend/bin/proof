@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+
+/*!
+ * bin/proof - bitcoin SES proofs
+ * Copyright (c) 2019, Mark Tyneway (Apache-2.0 License).
+ * https://github.com/summa-tx/agoric-bitcoin-spv
+ * */
+
+'use strict';
+
+const BcoinClient = require('../utils/BcoinClient');
+const {utils} = require('@summa-tx/bitcoin-spv-js');
+const Config = require('bcfg');
+
+const ports = {
+  main: 8332,
+  testnet: 18332,
+  regtest: 48332,
+  simnet: 18556
+};
+
+/**
+ * Fetch proofs to create an SPVProof.
+ **/
+
+(async () => {
+  const config = new Config('spv-proof', {
+    alias: {
+      t: 'txid',
+      a: 'address',
+      n: 'network',
+      u: 'url',
+      uri: 'url',
+      k: 'api-key',
+      s: 'ssl',
+      h: 'httphost',
+      p: 'httpport'
+    }
+  });
+
+  config.load({
+    argv: true,
+    env: true
+  });
+
+  if (config.has('help')) {
+    help();
+    process.exit(0);
+  }
+
+  const network = config.str('network', 'main');
+  const txid = config.str('txid');
+  if (!txid)
+    throw new Error('Must pass txid.');
+
+  const client = new BcoinClient({
+    url: config.str('url'),
+    apiKey: config.str('api-key'),
+    ssl: config.bool('ssl'),
+    host: config.str('http-host'),
+    port: config.uint('http-port')
+      || ports[network]
+      || ports.main
+  });
+
+  const tx = await client.getTX(txid);
+  const height = await client.getHeightByTX(txid);
+
+  if (!height)
+    throw new Error('Could not fetch height.');
+
+  const proof = await client.getProof(txid);
+
+  console.log(JSON.stringify({
+    version: Number(utils.bytesToUint(proof.version)),
+    vin: Buffer.from(proof.vin).toString('hex'),
+    vout: Buffer.from(proof.vout).toString('hex'),
+    locktime: Number(utils.bytesToUint(proof.locktime)),
+    tx_id: Buffer.from(proof.tx_id).toString('hex'),
+    tx_id_le: Buffer.from(proof.tx_id_le).toString('hex'),
+    index: proof.index,
+    confirming_header: {
+      raw: Buffer.from(proof.confirming_header.raw).toString('hex'),
+      hash: Buffer.from(proof.confirming_header.hash).toString('hex'),
+      hash_le: Buffer.from(proof.confirming_header.hash_le).toString('hex'),
+      height: proof.confirming_header.height,
+      prevhash: Buffer.from(proof.confirming_header.prevhash).toString('hex'),
+      merkle_root: Buffer.from(proof.confirming_header.merkle_root).toString('hex'),
+      merkle_root_le: Buffer.from(proof.confirming_header.merkle_root_le).toString('hex')
+    },
+    intermediate_nodes: Buffer.from(proof.intermediate_nodes, 'hex').toString('hex')
+  }, null, 2));
+
+})().catch((error) => {
+  console.log(error);
+  console.log('\n');
+  help();
+  process.exit(1);
+});
+
+// TODO
+function help() {
+  const str = ''
+    + 'bitcoin-verifier-ses proof builder\n'
+    + '  - TODO';
+ console.log(str);
+}
