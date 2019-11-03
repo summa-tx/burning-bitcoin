@@ -11,7 +11,7 @@
       </v-row>
       <v-row dense>
         <v-col sm="3">My tokens:</v-col>
-        <v-col sm="9">{{ myTokens }}</v-col>
+        <v-col sm="9">{{ myTotalTokens }}</v-col>
       </v-row>
       <v-row dense>
         <v-col sm="3">List of submitted proofs:</v-col>
@@ -276,7 +276,6 @@ export default {
     this.burntBitsMint = burntBitsMint
     const assay = burntBitsMint.getAssay()
     this.assay = assay
-    this.tokens = assay.makeEmptyPurse()
     this.myTokens = assay.makeEmptyPurse()
     this.everyoneElseTokens = assay.makeEmtpyPurse()
   },
@@ -327,7 +326,8 @@ export default {
       tokens: 0, // counter
       myTokens: null, // purse
       assay: null,
-      everyoneElseTokens: null // purse
+      everyoneElseTokens: null, // purse
+      myTotalTokens: 0
     }
   },
 
@@ -373,16 +373,18 @@ export default {
         })
     },
 
-    makeBurntBits () {
+    async makeBurntBits () {
       // Randomly generate a number of tokens
       const randomNumOfTokens = parseInt(Math.random() * 1000)
-
+      console.log({randomNumOfTokens})
       // Mint random number of tokens
       const purse = this.burntBitsMint.mint(randomNumOfTokens)
       this.tokens += randomNumOfTokens
       // Give some to me
-      const payment = purse.withdraw(0.88 * randomNumOfTokens)
-      this.myTokens = this.myTokens.depositAll(payment)
+      const payment = purse.withdraw(0.88 * 100 * randomNumOfTokens)
+
+      await this.myTokens.depositAll(payment)
+      this.myTotalTokens = 0.88 * 100 * this.tokens
     }
   }
 }
