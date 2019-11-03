@@ -7,7 +7,10 @@
 'use strict';
 
 const {NodeClient} = require('bcoin/lib/client');
-const {TX, Block, ChainEntry, Headers} = require('bcoin');
+const TX = require('bcoin/lib/primitives/tx');
+const Block = require('bcoin/lib/primitives/block');
+const Headers = require('bcoin/lib/primitives/headers');
+const ChainEntry = require('bcoin/lib/blockchain/chainentry');
 const assert = require('bsert');
 const {merkle} = require('bcrypto');
 const hash256 = require('bcrypto/lib/hash256');
