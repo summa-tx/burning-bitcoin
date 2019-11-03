@@ -100,7 +100,7 @@ func (am AppModule) Route() string {
 
 // NewHandler makes a new handler
 func (am AppModule) NewHandler() sdk.Handler {
-	return keeper.NewHandler(am.keeper)
+	return keeper.NewHandler(am.keeper, am.ibcKeeper)
 }
 
 // QuerierRoute is

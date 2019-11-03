@@ -44,7 +44,7 @@ func GetCmdBurnProof(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "burnproof [lots of json]",
 		Short: "prove a burn",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var req burnProofCall
 			json.Unmarshal([]byte(args[0]), &req)
@@ -58,6 +58,8 @@ func GetCmdBurnProof(cdc *codec.Codec) *cobra.Command {
 				req.HeaderChain,
 				req.Address,
 				cliCtx.GetFromAddress())
+			s, _ := json.Marshal(msg.Proof.ConfirmingHeader)
+			println(string(s))
 			err := msg.ValidateBasic()
 			if err != nil {
 				return err

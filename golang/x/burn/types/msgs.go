@@ -1,6 +1,8 @@
 package types
 
 import (
+	"encoding/json"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/summa-tx/bitcoin-spv/golang/btcspv"
 )
@@ -39,6 +41,9 @@ func (msg MsgBurnProof) Type() string { return "burnProof" }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgBurnProof) ValidateBasic() sdk.Error {
+	s, _ := json.Marshal(msg.Proof.ConfirmingHeader)
+	println(string(s))
+
 	validHeader, err := msg.Proof.ConfirmingHeader.Validate()
 	if !validHeader {
 		return ErrBadHeader(err.Error(), DefaultCodespace)
@@ -63,7 +68,7 @@ func (msg MsgBurnProof) ValidateBasic() sdk.Error {
 
 // validate the header chain
 func validateChain(first btcspv.BitcoinHeader, chain []btcspv.BitcoinHeader) (sdk.Uint, error) {
-	buf := make([]byte, 80*(1+len(chain)))
+	buf := make([]byte, 0)
 	buf = append(buf, first.Raw[:]...)
 	for i := 0; i < len(chain); i++ {
 		buf = append(buf, chain[i].Raw[:]...)
