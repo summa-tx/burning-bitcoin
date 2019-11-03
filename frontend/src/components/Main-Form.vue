@@ -344,11 +344,11 @@ export default {
           this.proof.locktime = res.data.proof.pretty.locktime
           this.proof.tx_id = res.data.proof.pretty.tx_id
           this.proof.tx_id_le = res.data.proof.pretty.tx_id_le
-          this.proof.index = res.data.proof.pretty.index
+          this.proof.index = res.data.proof.pretty.index.toString()
           this.proof.confirming_header.raw = res.data.proof.pretty.confirming_header.raw
           this.proof.confirming_header.hash = res.data.proof.pretty.confirming_header.hash
           this.proof.confirming_header.hash_le = res.data.proof.pretty.confirming_header.hash_le
-          this.proof.confirming_header.height = res.data.proof.pretty.confirming_header.height
+          this.proof.confirming_header.height = res.data.proof.pretty.confirming_header.height.toString()
           this.proof.confirming_header.prevhash = res.data.proof.pretty.confirming_header.prevhash
           this.proof.confirming_header.merkle_root = res.data.proof.pretty.confirming_header.merkle_root
           this.proof.confirming_header.merkle_root_le = res.data.proof.pretty.confirming_header.merkle_root_le
