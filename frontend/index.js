@@ -33,12 +33,10 @@ app.post('/getProof', (req, res) => {
 })
 
 app.post('/submitProof', async (req, res) => {
-  let GCI = 'ec8e37de3b8590ecb67174abbdf955516aabe7f61cd67dacabc9479c5fd7f358'
+  let GCI = '9a0b3bfd20c08da4c8e2958f085baeaf09dde6f04ecf00947a1ae0ad00da0586'
   let { state, send } = await connect(GCI)
-  let myBalance = await state.proofs
-  console.log({ myBalance })
-
   const proof = req.body.proof
+
   try {
     await send({ proof })
     let { tokens, proofs } = await state
@@ -46,7 +44,6 @@ app.post('/submitProof', async (req, res) => {
   } catch (e) {
     res.send(e)
   }
-
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

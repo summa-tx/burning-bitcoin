@@ -250,21 +250,13 @@ export default {
   },
 
   async mounted () {
-    // if (!this.mint) {
-    //   this.mint = makeMint('burntBits')
-    //   this.totalBits = this.mint.getAssay().makeEmptyPurse()
-    //   localStorage.setItem('mint', JSON.stringify(this.mint))
-    //   localStorage.setItem('totalBits', JSON.stringify(this.totalBits))
-    // }
-    // this.makeBurntBits()
     const burntBitsMint = makeMint('burntBits')
-    const purse = burntBitsMint.mint(1000)
+    this.burntBitsMint = burntBitsMint
     const assay = burntBitsMint.getAssay()
-    const payment = purse.withdraw(1000)
-    const totalBitsPurse = assay.makeEmptyPurse()
-    totalBitsPurse.depositAll(payment)
-    this.mint = burntBitsMint
-    this.totalBits = totalBitsPurse
+    this.assay = assay
+    this.tokens = assay.makeEmptyPurse()
+    this.myTokens = assay.makeEmptyPurse()
+    this.everyoneElseTokens = assay.makeEmtpyPurse()
   },
 
   computed: {
@@ -307,17 +299,21 @@ export default {
         headers: [v => v < 101 || 'Max headers is 100']
       },
       rawProof: undefined,
-      mint: JSON.parse(localStorage.getItem('mint')) || null,
-      totalBits: JSON.parse(localStorage.getItem('totalBits')) || null,
+      burntBitsMint: null,
+      totalBits: null,
       proofs: [],
-      tokens: 0
+      tokens: 0, // counter
+      myTokens: null, // purse
+      assay: null,
+      everyoneElseTokens: null // purse
     }
   },
 
   methods: {
     handleCollectProof () {
       console.log('collect proof')
-      axios.post('http://localhost:3000/getProof', { txid: this.txid })
+      axios
+        .post('http://localhost:3000/getProof', { txid: this.txid })
         .then((res) => {
           console.log({res})
           this.proof.version = res.data.proof.pretty.version
@@ -351,14 +347,22 @@ export default {
         .then((res) => {
           console.log({res})
           this.proofs = res.data.proofs
-          this.tokens = res.data.tokens
+          this.makeBurntBits()
         })
     },
 
-    makeBurntBits (amount) {
-      const purse = this.mint.mint(amount, 'bits')
-      const payment = purse.withdraw(amount)
-      this.totalBits
+    makeBurntBits () {
+      // Randomly generate a number of tokens
+      const decimals = parseInt(Math.random() * 10) * 2
+      const randomNumOfTokens = parseInt(Math.random() * 1000 * decimals)
+
+      // Mint random number of tokens
+      const purse = this.burntBitsMint.mint(randomNumOfTokens)
+      this.tokens += randomNumOfTokens
+      // Give some to me
+      const payment = purse.withdraw(0.88)
+
+      this.myTokens.depositAll(payment)
     }
   }
 }
