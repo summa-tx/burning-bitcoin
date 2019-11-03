@@ -63,8 +63,8 @@ export default {
 
     this.timeline0.fromTo(flame[0], 3.5, {scale: 0.4, x: 48, y: 0, opacity: 0.6}, {scale: 1.4, y: -35, opacity: 0.1, yoyo: true})
     this.timeline1.fromTo(flame[1], 4.1, {scale: 0.8, x: 98, y: 0, opacity: 0.8}, {scale: 1.3, y: -35, opacity: 0.2, yoyo: true})
-    this.timeline2.fromTo(flame[2], 3.3, {scale: 0.6, x: 188, y: 0, opacity: 0.5}, {scale: 1.2, y: -30, opacity: 0.1, yoyo: true})
-    this.timeline3.fromTo(flame[3], 4.6, {scale: 0.5, x: 218, y: 0, opacity: 0.9}, {scale: 1.4, y: -45, opacity: 0.3, yoyo: true})
+    this.timeline2.fromTo(flame[2], 3.3, {scale: 0.6, x: 188, y: 0, opacity: 0.5}, {scale: 1.2, y: -35, opacity: 0.1, yoyo: true})
+    this.timeline3.fromTo(flame[3], 4.6, {scale: 0.5, x: 218, y: 0, opacity: 0.9}, {scale: 1.4, y: -30, opacity: 0.3, yoyo: true})
     this.timeline4.fromTo(flame[4], 2.9, {scale: 0.6, x: 278, y: 0, opacity: 0.7}, {scale: 1.6, y: -60, opacity: 0.2, yoyo: true})
   },
 
