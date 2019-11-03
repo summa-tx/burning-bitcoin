@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  name: 'main',
+  name: 'MainForm',
 
   components: {
     ClickToCopy: () => import(/* webpackChunkName: 'Click to Copy' */ './Click-To-Copy')
@@ -103,12 +103,25 @@ export default {
 
   data: () => {
     return {
+      txid: null,
+      numOfHeaders: null,
+      proof: null,
       validTxid: true,
       validProof: true,
       rules: {
         txid: [v => !!v || 'TXID is required'],
         headers: [v => v < 101 || 'Max headers is 100']
       }
+    }
+  },
+
+  methods: {
+    handleCollectProof: () => {
+      console.log('collect proof')
+    },
+
+    handleSubmitProof: () => {
+      console.log('submit proof')
     }
   }
 }

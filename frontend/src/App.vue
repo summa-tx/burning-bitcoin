@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <Animations />
-      <Main/>
+      <Main-Form/>
     </v-content>
   </v-app>
 </template>
@@ -11,7 +11,7 @@
 export default {
   name: 'App',
   components: {
-    Main: () => import(/* webpackChunkName: 'Main' */ './components/Main'),
+    MainForm: () => import(/* webpackChunkName: 'Main-Form' */ './components/Main-Form'),
     Animations: () => import(/* webpackChunkName: 'Animations' */ './components/Animations'),
   },
   data: () => ({
