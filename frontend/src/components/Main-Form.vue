@@ -134,6 +134,7 @@
                     <v-text-field
                       disabled
                       class="proof-item"
+                      type="number"
                       :placeholder="proof.index"
                     ></v-text-field>
                   </v-col>
@@ -308,7 +309,7 @@ export default {
       rawProof: undefined,
       mint: JSON.parse(localStorage.getItem('mint')) || null,
       totalBits: JSON.parse(localStorage.getItem('totalBits')) || null,
-      proofCount: 0,
+      proofs: [],
       tokens: 0
     }
   },
@@ -349,7 +350,7 @@ export default {
       axios.post('http://localhost:3000/submitProof', { proof: this.proof})
         .then((res) => {
           console.log({res})
-          this.proofCount = res.data.proofCount
+          this.proofs = res.data.proofs
           this.tokens = res.data.tokens
         })
     },

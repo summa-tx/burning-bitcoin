@@ -33,16 +33,16 @@ app.post('/getProof', (req, res) => {
 })
 
 app.post('/submitProof', async (req, res) => {
-  let GCI = '764b1598b02227cd0fa3c0cc08ae3618a498690b1fc817e4238e978378e3a216'
+  let GCI = 'ec8e37de3b8590ecb67174abbdf955516aabe7f61cd67dacabc9479c5fd7f358'
   let { state, send } = await connect(GCI)
-  let myBalance = await state.proof_count
+  let myBalance = await state.proofs
   console.log({ myBalance })
 
   const proof = req.body.proof
   try {
     await send({ proof })
-    let { proofCount, tokens, proofs } = await state
-    res.send({ proofCount, tokens, proofs })
+    let { tokens, proofs } = await state
+    res.send({ tokens, proofs })
   } catch (e) {
     res.send(e)
   }

@@ -3,7 +3,6 @@ const {ValidateSPV, utils} = require('@summa-tx/bitcoin-spv-js')
 
 const app = lotion({
   initialState: {
-    proof_count: 0,
     tokens: 0,
     proofs: []
   }
@@ -12,7 +11,7 @@ function generateTokens (index) {
   console.log({index})
   const decimals = parseInt(Math.random() * 10) * index
   const randomNumOfTokens = parseInt(Math.random() * 1000 * decimals)
-  return randomNumOfTokens
+  state.tokens += randomNumOfTokens
 }
 function transactionHandler (state, transaction) {
   const proof = transaction.proof
@@ -20,6 +19,7 @@ function transactionHandler (state, transaction) {
   console.log(proof.tx_id)
   if (state.proofs.length > 0) {
     if (!state.proofs.find(p => p === txid)) {
+      generateTokens(proof.index)
       state.proofs.push(txid)
     } else {
       throw new Error('Proof already exists')
@@ -31,7 +31,6 @@ function transactionHandler (state, transaction) {
   //   state.proof_count++
   // }
   if (proof) {
-    const moreTokens = generateTokens(proof.index)
     state.tokens = state.tokens + moreTokens
     state.proof_count++
   }
