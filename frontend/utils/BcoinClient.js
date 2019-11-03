@@ -13,6 +13,7 @@ const {merkle} = require('bcrypto');
 const hash256 = require('bcrypto/lib/hash256');
 const consensus = require('bcoin/lib/protocol/consensus');
 const BN = require('bcrypto/lib/bn.js');
+const {utils} = require('@summa-tx/bitcoin-spv-js');
 
 /**
  * BcoinClient extends the bcoin NodeClient
@@ -56,10 +57,10 @@ class BcoinClient extends NodeClient {
     nodes = Buffer.from(nodes.join(), 'hex');
 
     return {
-      version: txinfo.version,
+      version: Number(utils.bytesToUint(utils.reverseEndianness(txinfo.version))),
       vin: txinfo.vin,
       vout: txinfo.vout,
-      locktime: txinfo.locktime,
+      locktime: Number(utils.bytesToUint(Buffer.from(txinfo.locktime).reverse())),
       tx_id: new Uint8Array(Buffer.from(txid, 'hex')),
       tx_id_le: new Uint8Array(Buffer.from(reverse(txid), 'hex')),
       index: index,
@@ -73,7 +74,7 @@ class BcoinClient extends NodeClient {
     const header = Headers.fromJSON(json);
 
     return {
-      raw: new Uint8Array(header.toRaw()),
+      raw: new Uint8Array(header.toRaw().slice(0, 80)),
       hash: new Uint8Array(header.hash()),
       hash_le: new Uint8Array(header.hash().reverse()),
       height: height,
