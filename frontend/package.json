@@ -13,6 +13,7 @@
     "bcrypto": "^3.1.1",
     "core-js": "^2.6.5",
     "material-design-icons-iconfont": "^5.0.1",
+    "@summa-tx/bitcoin-spv-js": "^2.2.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "vue": "^2.6.10",
