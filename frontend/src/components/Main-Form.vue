@@ -1,6 +1,25 @@
 <template>
   <section class="">
-    {{ proofs }}
+    <v-container>
+      <v-row dense>
+        <v-col sm="3">Number of Proofs:</v-col>
+        <v-col sm="9">{{ proofs.length }}</v-col>
+      </v-row>
+      <v-row dense>
+        <v-col sm="3">My tokens:</v-col>
+        <v-col sm="9">{{ myTokens }}</v-col>
+      </v-row>
+      <v-row dense>
+        <v-col sm="3">List of submitted proofs:</v-col>
+        <v-col sm="9">
+          <section class="proofs-list">
+            <ul>
+              <li v-for="(proof, index) in proofs" :key="index">{{proof}}</li>
+            </ul>
+          </section>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-layout column justify-center align-center>
       <v-container>
         <h2>Instructions:</h2>
@@ -360,8 +379,7 @@ export default {
       this.tokens += randomNumOfTokens
       // Give some to me
       const payment = purse.withdraw(0.88 * randomNumOfTokens)
-
-      this.myTokens.depositAll(payment)
+      this.myTokens = this.myTokens.depositAll(payment)
     }
   }
 }
@@ -373,5 +391,11 @@ export default {
   margin 20px 0
   border 2px solid #e3e3e3
   border-radius 10px
+
+.proofs-list
+  min-height 50px
+  max-height 200px
+  overflow scroll
+  border 2px solid #e3e3e3
 
 </style>
