@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/summa-tx/burning-bitcoin#readme",
   "dependencies": {
-    "@agoric/ertp": "git+https://github.com/Agoric/ERTP.git"
+    "@agoric/ertp": "git+https://github.com/Agoric/ERTP.git",
+    "@summa-tx/bitcoin-spv-js": "^2.2.0",
+    "bcoin": "git+https://github.com/bcoin-org/bcoin.git",
+    "bcrypto": "^3.1.1",
+    "core-js": "^2.6.5"
   }
 }

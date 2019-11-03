@@ -80,7 +80,7 @@
 </template>
 
 <script>
-const BcoinClient = require('../../utils/BcoinClient')
+import BcoinClient from '../../../utils/BcoinClient'
 const apiKey = process.env.BCOIN_API_KEY
 const host = process.env.BCOIN_HOST
 const port = process.env.BCOIN_PORT
@@ -97,7 +97,7 @@ export default {
   },
 
   mounted () {
-    console.log({host})
+    console.log(test.thing())
   },
 
   computed: {

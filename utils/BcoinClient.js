@@ -7,13 +7,15 @@
 'use strict';
 
 const {NodeClient} = require('bcoin/lib/client');
-const {TX, Block, ChainEntry, Headers} = require('bcoin');
+const TX = require('bcoin/lib/primitives/tx');
+const Block = require('bcoin/lib/primitives/block')
+const ChainEntry = require('bcoin/lib/blockchain/chainentry');
+const Headers = require('bcoin/lib/primitives/headers');
 const assert = require('bsert');
 const {merkle} = require('bcrypto');
 const hash256 = require('bcrypto/lib/hash256');
 const consensus = require('bcoin/lib/protocol/consensus');
 const BN = require('bcrypto/lib/bn.js');
-const {utils} = require('@summa-tx/bitcoin-spv-js');
 
 /**
  * BcoinClient extends the bcoin NodeClient
@@ -214,7 +216,7 @@ class BcoinClient extends NodeClient {
   }
 }
 
-module.exports = BcoinClient;
+export default BcoinClient;
 
 // helper functions
 function parseBcoinTx(hex) {
