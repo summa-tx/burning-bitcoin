@@ -1,0 +1,22 @@
+{
+  "name": "burning-bitcoin",
+  "version": "1.0.0",
+  "description": "burnt bits",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/summa-tx/burning-bitcoin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/summa-tx/burning-bitcoin/issues"
+  },
+  "homepage": "https://github.com/summa-tx/burning-bitcoin#readme",
+  "dependencies": {
+    "@agoric/ertp": "git+https://github.com/Agoric/ERTP.git"
+  }
+}
