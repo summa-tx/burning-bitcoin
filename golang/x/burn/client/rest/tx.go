@@ -18,6 +18,7 @@ type burnProofReq struct {
 	Proof       btcspv.SPVProof        `json:"proof"`
 	HeaderChain []btcspv.BitcoinHeader `json:"headers"`
 	Address     string                 `json:"signer"`
+	Recipient   string                 `json:"recipient"`
 }
 
 func burnProofHandler(cliCtx context.CLIContext) http.HandlerFunc {
@@ -34,7 +35,7 @@ func burnProofHandler(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgBurnProof(req.Proof, req.HeaderChain, req.Address, sdk.AccAddress{})
+		msg := types.NewMsgBurnProof(req.Proof, req.HeaderChain, req.Address, req.Recipient, sdk.AccAddress{})
 		utils.WriteGenerateStdTxResponse(w, cliCtx, baseReq, []sdk.Msg{msg})
 	}
 }

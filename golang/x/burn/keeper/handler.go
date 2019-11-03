@@ -32,18 +32,25 @@ func handleMsgBurnProof(ctx sdk.Context, keeper Keeper, ibcKeeper ibc.Keeper, ms
 		panic("bad bech32 address in Address")
 	}
 
+	addr2, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		panic("bad bech32 address in Address")
+	}
+
 	value := getBurnInfo(msg.Proof.Vout)
 	coin := sdk.NewCoin("burned BTC", sdk.NewInt(int64(value)))
-
-	// TODO: hook in IBC
-	ibcKeeper.TransferKeeper.SendTransfer(
+	err = ibcKeeper.TransferKeeper.SendTransfer(
 		ctx,
 		"bank",
-		"connectionzero",
+		"channelzero",
 		sdk.NewCoins(coin),
 		addr,
-		addr,
+		addr2,
 		false)
+
+	if err != nil {
+		return sdk.ResultFromError(err)
+	}
 
 	keeper.setValidated(ctx, msg.Proof)
 	keeper.AppendAddr(ctx, addr)

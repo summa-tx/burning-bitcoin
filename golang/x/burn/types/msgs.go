@@ -15,14 +15,16 @@ type MsgBurnProof struct {
 	Proof       btcspv.SPVProof        `json:"proof"`
 	HeaderChain []btcspv.BitcoinHeader `json:"headers"`
 	Address     string                 `json:"signer"`
+	Recipient   string                 `json:"recipient"`
 }
 
 // NewMsgBurnProof is a constructor function for MsgBurnProof
-func NewMsgBurnProof(proof btcspv.SPVProof, chain []btcspv.BitcoinHeader, address string, owner sdk.AccAddress) MsgBurnProof {
+func NewMsgBurnProof(proof btcspv.SPVProof, chain []btcspv.BitcoinHeader, address, recipient string, owner sdk.AccAddress) MsgBurnProof {
 	return MsgBurnProof{
 		proof,
 		chain,
 		address,
+		recipient,
 	}
 }
 
@@ -30,8 +32,9 @@ func NewMsgBurnProof(proof btcspv.SPVProof, chain []btcspv.BitcoinHeader, addres
 func (msg MsgBurnProof) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
+		panic(err.Error())
 		// Nobody is authed
-		return []sdk.AccAddress{}
+		// return []sdk.AccAddress{}
 	}
 	return []sdk.AccAddress{addr}
 }

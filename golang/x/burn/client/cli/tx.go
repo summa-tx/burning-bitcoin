@@ -37,6 +37,7 @@ type burnProofCall struct {
 	Proof       btcspv.SPVProof        `json:"proof"`
 	HeaderChain []btcspv.BitcoinHeader `json:"headers"`
 	Address     string                 `json:"signer"`
+	Recipient   string                 `json:"recipient"`
 }
 
 // GetCmdBurnProof is the CLI command for sending a DoThing transaction
@@ -47,19 +48,17 @@ func GetCmdBurnProof(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var req burnProofCall
-			println()
-			println(string(args[0]))
-			println()
+
 			json.Unmarshal([]byte(args[0]), &req)
 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-
 			msg := types.NewMsgBurnProof(
 				req.Proof,
 				req.HeaderChain,
 				req.Address,
+				req.Recipient,
 				cliCtx.GetFromAddress())
 			s, _ := json.Marshal(msg.Proof.ConfirmingHeader)
 			println(string(s))
