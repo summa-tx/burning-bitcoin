@@ -9,11 +9,11 @@
         <v-col sm="3">Total Tokens:</v-col>
         <v-col sm="9">{{ tokens }}</v-col>
       </v-row>
-      <v-row dense>
+      <!-- <v-row dense>
         <v-col sm="3">My tokens:</v-col>
         <v-col sm="9">{{ myTotalTokens }}</v-col>
       </v-row>
-      <v-row dense>
+      <v-row dense> -->
         <v-col sm="3">List of submitted proofs:</v-col>
         <v-col sm="9">
           <section class="proofs-list">
