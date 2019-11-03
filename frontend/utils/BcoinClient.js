@@ -78,12 +78,12 @@ class BcoinClient extends NodeClient {
 
     return {
       raw: header.toRaw().slice(0, 80).toString('hex'),
-      hash: header.hash().toString('hex'),
-      hash_le: header.hash().reverse().toString('hex'),
+      hash: header.hash().reverse().toString('hex'),
+      hash_le: header.hash().toString('hex'),
       height: height,
-      prevhash: header.prevBlock.toString('hex'),
-      merkle_root: header.merkleRoot.toString('hex'),
-      merkle_root_le: header.merkleRoot.reverse().toString('hex'),
+      prevhash: header.prevBlock.reverse().toString('hex'),
+      merkle_root: header.merkleRoot.reverse().toString('hex'),
+      merkle_root_le: header.merkleRoot.toString('hex'),
     }
   }
 
