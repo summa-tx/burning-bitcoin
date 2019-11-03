@@ -81,9 +81,9 @@
 
 <script>
 const BcoinClient = require('../../utils/BcoinClient')
-const apiKey = process.env.API_KEY
-const host = process.env.HOST
-const port = process.env.PORT
+const apiKey = process.env.BCOIN_API_KEY
+const host = process.env.BCOIN_HOST
+const port = process.env.BCOIN_PORT
 
 const client = new BcoinClient({
   apiKey, host, port
@@ -94,6 +94,10 @@ export default {
 
   components: {
     ClickToCopy: () => import(/* webpackChunkName: 'Click to Copy' */ './Click-To-Copy')
+  },
+
+  mounted () {
+    console.log({host})
   },
 
   computed: {
@@ -123,14 +127,14 @@ export default {
   methods: {
     handleCollectProof () {
       console.log('collect proof')
-      client.getProof(this.txid).then((proof) => {
-        this.proof = proof
-        console.log({ proof })
-        this.validProof = true
-      })
-      .catch((e) => {
-        console.log('bcoin getProof error', e)
-      })
+      // client.getProof(this.txid).then((proof) => {
+      //   this.proof = proof
+      //   console.log({ proof })
+      //   this.validProof = true
+      // })
+      // .catch((e) => {
+      //   console.log('bcoin getProof error', e)
+      // })
     },
 
     handleSubmitProof: () => {
