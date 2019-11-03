@@ -1,7 +1,6 @@
 <template>
   <section class="">
-    {{ proofCount }}
-    {{ tokens }}
+    {{ proofs }}
     <v-layout column justify-center align-center>
       <v-container>
         <h2>Instructions:</h2>
@@ -360,7 +359,7 @@ export default {
       const purse = this.burntBitsMint.mint(randomNumOfTokens)
       this.tokens += randomNumOfTokens
       // Give some to me
-      const payment = purse.withdraw(0.88)
+      const payment = purse.withdraw(0.88 * randomNumOfTokens)
 
       this.myTokens.depositAll(payment)
     }
