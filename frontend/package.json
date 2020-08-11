@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@agoric/ertp": "^0.1.11",
+    "@babel/preset-env": "^7.10.4",
     "@summa-tx/bitcoin-spv-js": "^2.2.0",
     "axios": "^0.19.0",
     "bcoin": "git+https://github.com/bcoin-org/bcoin.git",
