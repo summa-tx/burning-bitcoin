@@ -32,7 +32,7 @@
     "url": "git+https://github.com/Agoric/agoric"
   },
   "author": "Agoric",
-  "license": "Apache-2.0",
+  "license": "(MIT OR Apache-2.0)",
   "bugs": {
     "url": "https://github.com/Agoric/agoric/issues"
   },
